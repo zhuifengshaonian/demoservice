@@ -1,0 +1,32 @@
+syntax = "proto3";
+package demoservice.v1;
+option go_package = "huaweicloud.com/leon/demo/gen/go/demoservice/v1";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+message TalkRequest {
+  int64 sn = 1;
+  TalkMessage talk_message = 2;
+}
+
+message TalkReply{
+  int64 sn = 1;
+  TalkMessage talk_message = 2;
+}
+
+message TalkMessage{
+  string from_name = 1;
+  string to_name = 2;
+  string message = 3;
+  google.protobuf.Timestamp time = 4;
+}
+
+service DemoService {
+  rpc Talk(TalkRequest) returns (TalkReply) {
+    option (google.api.http) = {
+      post: "/v1/talk/{talk_message.to_name}",
+      body:"*"
+    };
+  }
+}

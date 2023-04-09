@@ -1,0 +1,15 @@
+server:
+  http:
+    addr: 0.0.0.0
+    port: 9000
+  grpc:
+    addr: 0.0.0.0
+    port: 9001
+log:
+  file-path: /logs/demoservice.log
+app-info:
+  micro-service-name: demoservice
+  group: ap
+  service: wlx
+
+

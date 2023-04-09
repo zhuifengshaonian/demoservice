@@ -1,0 +1,139 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "demoservice/v1/demo.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "DemoService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/talk/{talkMessage.toName}": {
+      "post": {
+        "operationId": "DemoService_Talk",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1TalkReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "talkMessage.toName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sn": {
+                  "type": "string",
+                  "format": "int64"
+                },
+                "talkMessage": {
+                  "type": "object",
+                  "properties": {
+                    "fromName": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "time": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "DemoService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1TalkMessage": {
+      "type": "object",
+      "properties": {
+        "fromName": {
+          "type": "string"
+        },
+        "toName": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1TalkReply": {
+      "type": "object",
+      "properties": {
+        "sn": {
+          "type": "string",
+          "format": "int64"
+        },
+        "talkMessage": {
+          "$ref": "#/definitions/v1TalkMessage"
+        }
+      }
+    }
+  }
+}
