@@ -1,12 +1,10 @@
 package main
 
 import (
+	"demoservice/configs"
 	"demoservice/internal/pkg/zlog"
 	"demoservice/internal/server"
 	"flag"
-	"fmt"
-
-	"github.com/spf13/viper"
 )
 
 var flagConf string
@@ -18,16 +16,13 @@ func init() {
 
 func main() {
 	flag.Parse()
-	viper.SetConfigFile(flagConf)
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("load config file %v failed.", flagConf))
-	}
+	appInfo := configs.Load(&flagConf)
 
-	zlog.Init(viper.GetString("log.file-path"))
+	zlog.Init(appInfo.Log.FilePath)
 	defer zlog.Sync()
-	zlog.Sugar.Infoln(viper.AllSettings())
-	err = server.Server()
+
+	zlog.Sugar.Info(appInfo)
+	err := server.Server(appInfo.Grpc, appInfo.Http)
 	if err != nil {
 		panic("start server failed.")
 	}

@@ -1,40 +1,56 @@
 package configs
 
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/spf13/viper"
+)
+
+var v *viper.Viper
+
 type AppInfo struct {
-	Service          string
-	Group            string
-	MicroServiceName string
-	Log              *LogConfig
-	Http             *HttpConfig
-	Grpc             *GrpcConfig
+	Service          string      `yaml:"service"`
+	Group            string      `yaml:"group"`
+	MicroServiceName string      `yaml:"micro-service-name" mapstructure:"micro-service-name"`
+	Log              *LogConfig  `yaml:"log"`
+	Http             *HttpConfig `yaml:"http"`
+	Grpc             *GrpcConfig `yaml:"grpc"`
 }
 
 type LogConfig struct {
-	FilePath string
-}
-
-func (l LogConfig) String() string {
-	return ""
+	FilePath string `yaml:"file-path" mapstructure:"file-path"`
 }
 
 type GrpcConfig struct {
-	Addr string
-	Port int32
-}
-
-func (g GrpcConfig) String() string {
-	return ""
+	Addr string `yaml:"addr"`
+	Port int32  `yaml:"port"`
 }
 
 type HttpConfig struct {
-	Addr string
-	Port int32
+	Addr string `yaml:"addr"`
+	Port int32  `yaml:"port"`
 }
 
-func (h HttpConfig) String() string {
-	return ""
+func Load(filePath *string) (app *AppInfo) {
+	v = viper.New()
+	v.SetConfigFile(*filePath)
+	err := v.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("load config file %v failed.", filePath))
+	}
+	app = &AppInfo{}
+	err = v.Unmarshal(app)
+	if err != nil {
+		return
+	}
+	return app
 }
 
-func (a AppInfo) String() string {
-	return ""
+func (AppInfo) String() string {
+	marshal, err := json.MarshalIndent(v.AllSettings(), "", "\t")
+	if err != nil {
+		return fmt.Sprintf("%v", v.AllSettings())
+	}
+	return string(marshal)
 }

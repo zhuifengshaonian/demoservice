@@ -3,8 +3,10 @@ package server
 import (
 	"context"
 	v1 "demoservice/api/demoservice/v1"
+	"demoservice/configs"
 	"demoservice/internal/pkg/zlog"
 	"demoservice/internal/service"
+	"fmt"
 	"net"
 	"net/http"
 
@@ -16,8 +18,8 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func Server() error {
-	addr := ":9000"
+func Server(g *configs.GrpcConfig, h *configs.HttpConfig) error {
+	addr := fmt.Sprintf("%s:%d", g.Addr, g.Port)
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		return err
@@ -50,7 +52,7 @@ func Server() error {
 		return err
 	}
 	server := http.Server{
-		Addr:    ":9001",
+		Addr:    fmt.Sprintf("%s:%d", h.Addr, h.Port),
 		Handler: gwMux,
 	}
 	zlog.Sugar.Infof("serving gateway on %s", server.Addr)
